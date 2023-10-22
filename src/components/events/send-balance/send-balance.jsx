@@ -1,7 +1,5 @@
-// TransactionHistory.js
 import React, { useState, useEffect } from "react";
 import "./send-balance.css";
-// import Moralis from "moralis";
 import Moralis from "moralis";
 import { EvmChain } from "@moralisweb3/common-evm-utils"; // Import EvmChain from the correct package
 
@@ -14,7 +12,7 @@ function SendBalance({ ...props }) {
           apiKey:
             "khlUdKYkvJvA9Ruj0n0Ire7Foax3m7LY7g0inZbSqzZC8rttoDgxAqtggzGah91U",
         });
-      const address = "0xD05c36AC9C044a18d6Eb999F579e400C99308C42"; //"0xe184a68428072f0102f073a098af8ee7705519dc";
+      const address = "0x7716dB181506939Ed6Ba6e35755A8668D8668D9A"; //"0xe184a68428072f0102f073a098af8ee7705519dc";
       const chain = EvmChain.BSC_TESTNET;
       const topic =
         "0x85564825e768c97dfb9dc0b3f8c205b076e86cd7637219b43f6ba7a748f6dbb9";
@@ -24,7 +22,7 @@ function SendBalance({ ...props }) {
           {
             indexed: true,
             internalType: "address",
-            name: "user",
+            name: "referer",
             type: "address",
           },
           {
@@ -46,33 +44,25 @@ function SendBalance({ ...props }) {
         abi,
       });
       let datas = response.toJSON().result.map((transaction) => ({
-        referrer: transaction.data.user,
+        referrer: transaction.data.referer,
         amount: parseFloat(
           props.web3.utils.fromWei(transaction.data.amount, "ether")
         ).toFixed(4),
         transactionHash: transaction.transaction_hash,
       }));
-      console.log("Transaction:", datas);
-
       const filteredTransactions = datas.filter(
         (transaction) =>
           transaction.amount != 0 &&
           transaction.referrer.toLowerCase() == props.account.toLowerCase()
       );
-      // .log("Filter Transation", filteredTransactions);
-
       setTransactions(filteredTransactions);
     };
-
     runApp();
   }, []);
-
   const handleLinkClick = (url) => {
     let baseUrl = "https://testnet.bscscan.com/tx/";
-    console.log("Tar:", url);
     window.open(baseUrl + url, "_blank");
   };
-
   return (
     <div className="PoolIncome-SendBalance">
       <h1>Transaction History Of Send Balance</h1>

@@ -1,13 +1,10 @@
 // TransactionHistory.js
 import React, { useState, useEffect } from "react";
 import "./lucky-draw-win.css";
-// import Moralis from "moralis";
 import Moralis from "moralis";
 import { EvmChain } from "@moralisweb3/common-evm-utils"; // Import EvmChain from the correct package
-
 function LuckyDrawWin({ ...props }) {
   const [transactions, setTransactions] = useState([]);
-  console.log("Props :", props.account, props);
   useEffect(() => {
     const runApp = async () => {
       if (!Moralis.Core.isStarted)
@@ -15,7 +12,7 @@ function LuckyDrawWin({ ...props }) {
           apiKey:
             "khlUdKYkvJvA9Ruj0n0Ire7Foax3m7LY7g0inZbSqzZC8rttoDgxAqtggzGah91U",
         });
-      const address = "0xD05c36AC9C044a18d6Eb999F579e400C99308C42"; //"0xe184a68428072f0102f073a098af8ee7705519dc";
+      const address = "0x7716dB181506939Ed6Ba6e35755A8668D8668D9A"; //"0xe184a68428072f0102f073a098af8ee7705519dc";
       const chain = EvmChain.BSC_TESTNET;
       const topic =
         "0xece26849988d1627dd651a357d99c795fa504210f5186090234f2930bf0215ce";
@@ -50,7 +47,6 @@ function LuckyDrawWin({ ...props }) {
         name: "LuckyDrawWin",
         type: "event",
       };
-
       let limit = 10000;
       const response = await Moralis.EvmApi.events.getContractEvents({
         address,
@@ -59,7 +55,6 @@ function LuckyDrawWin({ ...props }) {
         topic,
         abi,
       });
-      console.log(response.toJSON());
       let datas = response.toJSON().result.map((transaction) => ({
         winner: transaction.data.winner,
         luckyReward: parseFloat(
@@ -69,32 +64,14 @@ function LuckyDrawWin({ ...props }) {
         startID: transaction.data.startID,
         transactionHash: transaction.transaction_hash,
       }));
-      console.log("Transaction:", datas);
       setTransactions(datas);
     };
-
     runApp();
   }, []);
-
   const handleLinkClick = (url) => {
     let baseUrl = "https://testnet.bscscan.com/tx/";
     window.open(baseUrl + url, "_blank");
   };
-
-  console.log("Transaction Data: ", transactions);
-  // const [filter, setFilter] = useState("All");
-  // const filteredTransactions =
-  //   filter === "referrer"
-  //     ? transactions.filter(
-  //         (transaction) =>
-  //           transaction.referrer.toLowerCase() === props.account.toLowerCase()
-  //       )
-  //     : transactions.filter(
-  //         (transaction) =>
-  //           transaction.user.toLowerCase() === props.account.toLowerCase()
-  //       );
-  // console.log("Filter Transation", filteredTransactions);
-
   return (
     <div className="PoolIncome-luckyDraw">
       <h1>Transaction History Of Lucky Draw Win</h1>
@@ -132,5 +109,4 @@ function LuckyDrawWin({ ...props }) {
     </div>
   );
 }
-
 export default LuckyDrawWin;

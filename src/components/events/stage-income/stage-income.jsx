@@ -1,13 +1,9 @@
-// TransactionHistory.js
 import React, { useState, useEffect } from "react";
 import "./stage-income.css";
-// import Moralis from "moralis";
 import Moralis from "moralis";
 import { EvmChain } from "@moralisweb3/common-evm-utils"; // Import EvmChain from the correct package
-
 function StageIncome({ ...props }) {
   const [transactions, setTransactions] = useState([]);
-  console.log("Props :", props.account, props);
   useEffect(() => {
     const runApp = async () => {
       if (!Moralis.Core.isStarted)
@@ -15,7 +11,7 @@ function StageIncome({ ...props }) {
           apiKey:
             "khlUdKYkvJvA9Ruj0n0Ire7Foax3m7LY7g0inZbSqzZC8rttoDgxAqtggzGah91U",
         });
-      const address = "0xD05c36AC9C044a18d6Eb999F579e400C99308C42"; //"0xe184a68428072f0102f073a098af8ee7705519dc";
+      const address = "0x7716dB181506939Ed6Ba6e35755A8668D8668D9A"; //"0xe184a68428072f0102f073a098af8ee7705519dc";
       const chain = EvmChain.BSC_TESTNET;
       const topic =
         "0xe655a13ddd4b7f0f56febd549e2d4818002460dad585dd4f7af4ab1d231fa553";
@@ -31,7 +27,7 @@ function StageIncome({ ...props }) {
           {
             indexed: true,
             internalType: "address",
-            name: "_partner",
+            name: "_referral",
             type: "address",
           },
           {
@@ -58,36 +54,27 @@ function StageIncome({ ...props }) {
         topic,
         abi,
       });
-      console.log(response.toJSON());
       let datas = response.toJSON().result.map((transaction) => ({
         user: transaction.data._user,
-        referrer: transaction.data._partner,
+        referrer: transaction.data._referral,
         date: new Date(transaction.data._time * 1000)
           .toISOString()
           .split("T")[0], // Adjust the format as needed
         time: new Date(transaction.data._time * 1000)
           .toTimeString()
           .split(" ")[0],
-
         level: transaction.data._level,
-
-        // identity: transaction.data.Identity,
         transactionHash: transaction.transaction_hash,
       }));
-      console.log("Transaction:", datas);
       setTransactions(datas);
     };
-
     runApp();
   }, []);
 
   const handleLinkClick = (url) => {
     let baseUrl = "https://testnet.bscscan.com/tx/";
-    console.log("Tar:", url);
     window.open(baseUrl + url, "_blank");
   };
-
-  console.log("Transaction Data: ", transactions);
   const [filter, setFilter] = useState("all");
   const filteredTransactions =
     filter === "all"
@@ -100,12 +87,9 @@ function StageIncome({ ...props }) {
             transaction.user.toLowerCase() === props.account.toLowerCase() &&
             transaction.level == filter
         );
-  console.log("Filter Transation", filteredTransactions);
-
   return (
     <div className="PoolIncome-Stage">
       <h1>Transaction History Of Stage Income</h1>
-
       <div>
         <label>
           Filter by Level:
@@ -157,12 +141,4 @@ function StageIncome({ ...props }) {
     </div>
   );
 }
-
 export default StageIncome;
-
-// stageIncome( only visible for subadmin-true)
-// AutopoolIncome
-// LuckyDrawWin
-// SendBalance ( only visible for subadmin-true)
-// SponsorIncome
-// LevelsIncome
